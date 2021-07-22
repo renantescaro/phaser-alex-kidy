@@ -14,7 +14,7 @@ var config = {
         create: create,
         update: update
     }
-};
+}
 
 var teclaEsc
 var teclaPulo
@@ -34,41 +34,37 @@ var nPulos = 0
 var btnAndarEsquerda
 var btnAndarDireita
 
-function preload ()
-{
-    this.load.image('btn', 'assets/btn.png');
-
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('biblia', 'assets/biblia.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('groundPequeno', 'assets/platformPequenaa.png');
-    this.load.image('chao', 'assets/chao.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('corote', 'assets/corote.png');
-    this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 49, frameHeight: 137 });
+function preload(){
+    this.load.image('sky', 'assets/fundo.jpg')
+    this.load.image('biblia', 'assets/biblia.png')
+    this.load.image('ground', 'assets/plataforma.png')
+    this.load.image('groundPequeno', 'assets/platformPequenaa.png')
+    this.load.image('chao', 'assets/chao.png')
+    this.load.image('star', 'assets/star.png')
+    this.load.image('corote', 'assets/corote.png')
+    this.load.image('bomb', 'assets/bomb.png')
+    this.load.spritesheet('dude', 'assets/imagem.png', { frameWidth: 98, frameHeight: 140 })
 }
 
-function create ()
-{
+function create(){
     // *** Cenário ***
-    
-    // background
-    this.add.image(400,  330, 'sky');
-    this.add.image(1600, 330, 'sky');
-    this.add.image(2800, 330, 'sky');
-    this.add.image(4000, 330, 'sky');
-    this.add.image(5200, 330, 'sky');
 
-    platforms = this.physics.add.staticGroup();
-    chao = this.physics.add.staticGroup();
-    
+    // background
+    this.add.image(400,  330, 'sky')
+    this.add.image(1600, 300, 'sky')
+    this.add.image(2800, 330, 'sky')
+    this.add.image(4000, 330, 'sky')
+    this.add.image(5200, 330, 'sky')
+
+    platforms = this.physics.add.staticGroup()
+    chao = this.physics.add.staticGroup()
+
     // chão
-    platforms.create(400,  670, 'chao').setScale(2).refreshBody()
-    platforms.create(1100, 670, 'chao').setScale(2).refreshBody()
-    platforms.create(2500, 670, 'chao').setScale(2).refreshBody()
-    platforms.create(3500, 670, 'chao').setScale(2).refreshBody()
-    
+    platforms.create(400,  670, 'chao').setScale(1).refreshBody()
+    platforms.create(1100, 670, 'chao').setScale(1).refreshBody()
+    platforms.create(2500, 670, 'chao').setScale(1).refreshBody()
+    platforms.create(3500, 670, 'chao').setScale(1).refreshBody()
+
     // plataformas
     platforms.create(600,  545, 'ground')
     platforms.create(1000, 360, 'ground')
@@ -80,21 +76,9 @@ function create ()
     platforms.create(3050, 450, 'groundPequeno')
     platforms.create(3180, 230, 'groundPequeno')
     platforms.create(3580, 230, 'groundPequeno')
-    
+
     corote = this.physics.add.sprite(3580, 170,'corote')
     player = this.physics.add.sprite(100, 450, 'dude')
-    
-    // btnAndarEsquerda = this.add.sprite(70, 650, 'btn').setInteractive()
-    // btnAndarDireita = this.add.sprite(170, 650, 'btn').setInteractive()
-
-    // // se for celular
-    // if('ontouchstart' in window){
-
-    //     btnAndarEsquerda.on('pointerdown', andarEsquerda)
-    //     btnAndarEsquerda.on('pointerup', parar)
-    //     btnAndarDireita.on('pointerdown', andarDireita)
-    //     btnAndarDireita.on('pointerup', parar)
-    // }
 
     // camera
     this.cameras.main.setBounds(0,0,1920*2, 700)
@@ -125,28 +109,26 @@ function create ()
         key: 'turn',
         frames: [ { key: 'dude', frame: 4 } ],
         frameRate: 20
-    });
+    })
 
-    teclaEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-    teclaPulo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    teclaEsc  = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
+    teclaPulo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+    cursors   = this.input.keyboard.createCursorKeys()
 
-    cursors = this.input.keyboard.createCursorKeys();
-    
-    
-    // Estrelas
-    
-    // grupo de 30 estrelas, a cada 205 px, a partir de 1000 px do inicio de x
+    // inimigos
+
+    // grupo de 30 inimigos, a cada 205 px, a partir de 1000 px do inicio de x
     stars = this.physics.add.group({
         key: 'star',
         repeat: 30,
         setXY: { x: 1000, y: 0, stepX: 205 }
-    });
+    })
     
     biblias = this.physics.add.group();
 
    scoreText = this.add.text(100, 100, 'Pontos: 0  Vida: 100', { fontSize: '32px', fill: '#000' });
 
-   // adiciona colisão entre as estrelas e as plataformas
+   // adiciona colisão entre as inimigos e as plataformas
    this.physics.add.collider(stars, platforms);
    this.physics.add.collider(biblias, platforms);
    this.physics.add.collider(corote, platforms);
@@ -157,78 +139,61 @@ function create ()
    this.physics.add.overlap(player, corote, fimFase, null, this);
 }
 
-function update (){
-
+function update(){
     if(player.body.touching.down){ 
-
         nPulos = 0;
     }
 
     scoreText.x = player.x;
-    
-    if(player.y > 630){
 
+    if(player.y > 630){
         morrer();
     }
 
     if(Phaser.Input.Keyboard.JustDown(teclaEsc)){
-
         configuracoes();
     }
 
     if (cursors.left.isDown){
-
         andarEsquerda()
-
     }else if (cursors.right.isDown){
-
         andarDireita()
     }else{
-
         parar()
     }
     
     if(Phaser.Input.Keyboard.JustDown(teclaPulo)){
-
         if(nPulos == 0 && player.body.touching.down){
-    
             pular()
         }
-        
         if(nPulos == 1 && !player.body.touching.down){
-
             pular()
         }
     }
 }
 
 function andarEsquerda(){
-
     player.setVelocityX(-160)
     player.anims.play('left', true)
 }
 
 function andarDireita(){
-
     player.setVelocityX(160)
     player.anims.play('right', true)
 }
 
 function parar(){
-
     player.setVelocityX(0)
 	player.anims.play('turn')
 }
 
 function pular(){
-
     nPulos++
     player.setVelocityY(-330)
 }
 
 // desativa estrela sobreposta pelo player
 function collectStar (player, star){
-
     star.disableBody(true, true);
 
     score += 10;
@@ -241,70 +206,50 @@ function collectStar (player, star){
 }
 
 function encostarBiblia(player, biblia){
-
     vida -= 1;
     scoreText.setText('Pontos: ' + score + ' Vida: ' + vida);
 
     if(vida <= 0){
-
-        morrer();
+        morrer()
     }
 }
 
 function fimFase(player, corote){
-    
-    document.body.style.backgroundColor = '#090';
-
-    document.getElementsByTagName('canvas')[0].style.display = 'none';
-
-    document.getElementById('dvFimFase').style.display = '';
+    document.body.style.backgroundColor = '#090'
+    document.getElementsByTagName('canvas')[0].style.display = 'none'
+    document.getElementById('dvFimFase').style.display = ''
 }
 
 // ***************************************************
 
 function iniciarJogo(){
-
-    document.getElementById('dvMenu').style.display = 'none';
-
-    document.body.style.backgroundColor = '#000';
-
-    game = new Phaser.Game(config);
+    document.getElementById('dvMenu').style.display = 'none'
+    document.body.style.backgroundColor = '#000'
+    game = new Phaser.Game(config)
 }
 
 function sairJogo(){
-
-    window.location.href = '';
+    window.location.href = ''
 }
 
 function reiniciar(){
-
-    window.location.href = '';
+    window.location.href = ''
 }
 
 function morrer(){
-
-    document.body.style.backgroundColor = '#900';
-
-    document.getElementsByTagName('canvas')[0].style.display = 'none';
-    document.getElementById('morte').style.display = '';
+    document.body.style.backgroundColor = '#900'
+    document.getElementsByTagName('canvas')[0].style.display = 'none'
+    document.getElementById('morte').style.display = ''
 }
 
 function configuracoes(){
-    
-    let canvas = document.getElementsByTagName('canvas')[0];
-
+    let canvas = document.getElementsByTagName('canvas')[0]
     if(canvas.style.display == ''){
-
-        document.getElementById('dvMenu').style.display = 'none';
-
-        document.getElementById('dvMenuConfiguracoes').style.display = '';
-
+        document.getElementById('dvMenu').style.display = 'none'
+        document.getElementById('dvMenuConfiguracoes').style.display = ''
         canvas.style.display = 'none';
-    
     }else{
-
-        document.getElementById('dvMenuConfiguracoes').style.display = 'none';
-        
-        canvas.style.display = '';
+        document.getElementById('dvMenuConfiguracoes').style.display = 'none'
+        canvas.style.display = ''
     }
 }
